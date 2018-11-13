@@ -3,8 +3,9 @@
 #include <cassert>
 
 #define COUNT 15
+#define AVG_CASE_TRIALS 5
 
-int countOperations = 0;
+unsigned long int countOperations = 0;
 
 typedef struct Node {
 	int key;
@@ -17,6 +18,8 @@ Node* newNode(int key) {
 	assert(n != NULL);
 
 	n->key = key;
+	countOperations += 2;
+	
 	return n;
 }
 
@@ -43,11 +46,14 @@ void prettyPrint(Node *root, int space=0) {
 }
 
 void subtractNodeSizes(Node *root) {
+	countOperations++;
 	if (root == NULL)
 		return;
 	subtractNodeSizes(root->left);
 	subtractNodeSizes(root->right);
 	root->size--;
+	
+	countOperations++;
 }
 
 void setNodeSize(Node *root) {
@@ -55,32 +61,36 @@ void setNodeSize(Node *root) {
 		return;
 
 	int s=1;
-	if (root->left)  s += root->left->size;
-	if (root->right) s += root->right->size;
+	if (root->left)  s += root->left->size;		// assign++
+	if (root->right) s += root->right->size;	// assign++
 
-	root->size = s;
+	root->size = s;		// assign++
+	countOperations += 6;
 }
 
 // T(n) = 2*T(n/2) + O(1) => T(n) = O(n)
 Node* fillTree(Node *root, int l, int r, Node *parent = NULL) {
-	if (l > r)
+	if (l > r)	// cmp++
 		return NULL;
-
-	int mid = (l+r+1)/2;
+		
+	int mid = (l+r+1)/2; // assign++
 
 	if (mid == 0)
 		return NULL;
 
-	root = newNode(mid);
+	root = newNode(mid); // assign++
+
+	
 	root->parent = parent;
 	root->left = fillTree(root->left, l, mid-1, root);
 	root->right = fillTree(root->right, mid+1, r, root);
 
+	countOperations += 3; // 3 assigns
+	
 	setNodeSize(root);
-
+	
 	return root;
 }
-
 
 Node* BUILD_TREE(int max) {
 	Node *root = fillTree(root, 0, max);
@@ -102,54 +112,73 @@ Node* OS_SELECT(Node* x, int i) {
 }
 
 Node* TREE_MINIMUM(Node* root) {
-	while (root->left)
+	while (root->left) {
 		root = root->left;
+		countOperations += 2;
+	}
 		
 	return root;
 }
 
 void TRANSPLANT(Node** root, Node* u, Node* v) {
-    if (u->parent == NULL)
+    if (u->parent == NULL) {
         *root = v;
-    else if (u == u->parent->left)
+        countOperations++;	// for the assigns
+    } else if (u == u->parent->left) {
         u->parent->left = v;
-    else
+        countOperations += 2;
+    } else {
         u->parent->right = v;
-        
-    if (v != NULL)
+    	countOperations += 3;
+    }
+    
+    countOperations++; // for first cmp
+    
+    if (v != NULL) {
         v->parent = u->parent;
+        countOperations++;	// assign above
+    }
+        
+    countOperations++;
 }
 
 void decrSize(Node* node) {
 	while (node != NULL) {
 		node->size--;
 		node = node->parent;
+		countOperations += 2;
 	}	
 }
 
 void TREE_DELETE(Node** root, Node* z) {
-	if (z->left == NULL) 
+	if (z->left == NULL) {
 		TRANSPLANT(root, z, z->right);
-		
-	else if (z->right == NULL)
+	} else if (z->right == NULL) {
+		countOperations++; // cmp above
 		TRANSPLANT(root, z, z->left);
+	} else {
+		countOperations++; // cmp above
 		
-	else {
-		Node* y = TREE_MINIMUM(z->right);
+		Node* y = TREE_MINIMUM(z->right); // a++
 		decrSize(y->parent);
 		
 		if (y->parent != z) {
+			countOperation++;
 			TRANSPLANT(root, y, y->right);
 			y->right = z->right;
 			y->right->parent = y;
+			countOperation += 2;
 		}
+		countOperation++; // failed the `while` condition above
 		
 		TRANSPLANT(root, z, y);
 		y->left = z->left;
 		y->left->parent = y;
 		y->size = z->size;
+		countOperation += 3; // assigns
 	}
 	
+	countOperations++;
 	free(z);
 }
 
@@ -164,6 +193,10 @@ void demo() {
 	OS_DELETE(&N, 6);
 	printf("-----------");
 	prettyPrint(N);
+}
+
+void evaluateEffort() {
+	
 }
 
 int main() {
