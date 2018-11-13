@@ -53,6 +53,7 @@ void setNodeSize(Node *root) {
 	root->size = s;
 }
 
+// T(n) = 2*T(n/2) + O(1) => T(n) = O(n)
 Node* fillTree(Node *root, int l, int r) {
 	if (l > r)
 		return NULL;
@@ -78,7 +79,29 @@ Node* BUILD_TREE(int max) {
 	return root;
 }
 
-int main() {
-	Node *N = BUILD_TREE(100);
+Node* OS_SELECT(Node* x, int i) {
+	if (x == NULL) return x;
+
+	int r = (x->left ? x->left->size : 0) + 1;
+
+	if (i == r)
+		return x;
+	else if (i < r)
+		return OS_SELECT(x->left, i);
+	else
+		return OS_SELECT(x->right, i - r);
+}
+
+void demo() {
+	Node *N = BUILD_TREE(20);
 	prettyPrint(N);
+	for (int i=1; i < 15; i++) {
+		printf("---------------------------");
+		prettyPrint(OS_SELECT(N, i));
+
+	}
+}
+
+int main() {
+	demo();
 }
