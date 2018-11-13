@@ -9,7 +9,7 @@ int countOperations = 0;
 typedef struct Node {
 	int key;
 	int size;
-	Node *left, *right;
+	Node *parent, *left, *right;
 } Node;
 
 Node* newNode(int key) {
@@ -42,6 +42,14 @@ void prettyPrint(Node *root, int space=0) {
     prettyPrint(root->left, space);
 }
 
+void subtractNodeSizes(Node *root) {
+	if (root == NULL)
+		return;
+	subtractNodeSizes(root->left);
+	subtractNodeSizes(root->right);
+	root->size--;
+}
+
 void setNodeSize(Node *root) {
 	if (root == NULL)
 		return;
@@ -54,7 +62,7 @@ void setNodeSize(Node *root) {
 }
 
 // T(n) = 2*T(n/2) + O(1) => T(n) = O(n)
-Node* fillTree(Node *root, int l, int r) {
+Node* fillTree(Node *root, int l, int r, Node *parent = NULL) {
 	if (l > r)
 		return NULL;
 
@@ -64,9 +72,9 @@ Node* fillTree(Node *root, int l, int r) {
 		return NULL;
 
 	root = newNode(mid);
-
-	root->left = fillTree(root->left, l, mid-1);
-	root->right = fillTree(root->right, mid+1, r);
+	root->parent = parent;
+	root->left = fillTree(root->left, l, mid-1, root);
+	root->right = fillTree(root->right, mid+1, r, root);
 
 	setNodeSize(root);
 
@@ -79,6 +87,7 @@ Node* BUILD_TREE(int max) {
 	return root;
 }
 
+// resembles quickselect / randomized_select from L3
 Node* OS_SELECT(Node* x, int i) {
 	if (x == NULL) return x;
 
@@ -92,14 +101,69 @@ Node* OS_SELECT(Node* x, int i) {
 		return OS_SELECT(x->right, i - r);
 }
 
-void demo() {
-	Node *N = BUILD_TREE(20);
-	prettyPrint(N);
-	for (int i=1; i < 15; i++) {
-		printf("---------------------------");
-		prettyPrint(OS_SELECT(N, i));
+Node* TREE_MINIMUM(Node* root) {
+	while (root->left)
+		root = root->left;
+		
+	return root;
+}
 
+void TRANSPLANT(Node** root, Node* u, Node* v) {
+    if (u->parent == NULL)
+        *root = v;
+    else if (u == u->parent->left)
+        u->parent->left = v;
+    else
+        u->parent->right = v;
+        
+    if (v != NULL)
+        v->parent = u->parent;
+}
+
+void decrSize(Node* node) {
+	while (node != NULL) {
+		node->size--;
+		node = node->parent;
+	}	
+}
+
+void TREE_DELETE(Node** root, Node* z) {
+	if (z->left == NULL) 
+		TRANSPLANT(root, z, z->right);
+		
+	else if (z->right == NULL)
+		TRANSPLANT(root, z, z->left);
+		
+	else {
+		Node* y = TREE_MINIMUM(z->right);
+		decrSize(y->parent);
+		
+		if (y->parent != z) {
+			TRANSPLANT(root, y, y->right);
+			y->right = z->right;
+			y->right->parent = y;
+		}
+		
+		TRANSPLANT(root, z, y);
+		y->left = z->left;
+		y->left->parent = y;
+		y->size = z->size;
 	}
+	
+	free(z);
+}
+
+void OS_DELETE(Node** root, int i) {
+	Node* toBeDeleted = OS_SELECT(*root, i);
+	TREE_DELETE(root, toBeDeleted);
+}
+
+void demo() {
+	Node *N = BUILD_TREE(11);
+	prettyPrint(N);
+	OS_DELETE(&N, 6);
+	printf("-----------");
+	prettyPrint(N);
 }
 
 int main() {
