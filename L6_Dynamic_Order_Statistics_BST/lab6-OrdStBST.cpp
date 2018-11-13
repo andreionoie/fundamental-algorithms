@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cassert>
+#include <ctime>
 
 #define COUNT 15
 #define AVG_CASE_TRIALS 5
@@ -163,19 +164,19 @@ void TREE_DELETE(Node** root, Node* z) {
 		decrSize(y->parent);
 		
 		if (y->parent != z) {
-			countOperation++;
+			countOperations++;
 			TRANSPLANT(root, y, y->right);
 			y->right = z->right;
 			y->right->parent = y;
-			countOperation += 2;
+			countOperations += 2;
 		}
-		countOperation++; // failed the `while` condition above
+		countOperations++; // failed the `while` condition above
 		
 		TRANSPLANT(root, z, y);
 		y->left = z->left;
 		y->left->parent = y;
 		y->size = z->size;
-		countOperation += 3; // assigns
+		countOperations += 3; // assigns
 	}
 	
 	countOperations++;
@@ -188,10 +189,15 @@ void OS_DELETE(Node** root, int i) {
 }
 
 void demo() {
-	Node *N = BUILD_TREE(11);
+	int treeSize = 11;
+	Node *N = BUILD_TREE(treeSize);
+	printf("Whole tree: ");
 	prettyPrint(N);
-	OS_DELETE(&N, 6);
-	printf("-----------");
+	printf("\nRandomly selected node and subtree:");
+	prettyPrint(OS_SELECT(N, (int) 1 + drand48() * (treeSize - 1)));
+	OS_DELETE(&N, (int) 1 + drand48() * (treeSize - 1));
+	
+	printf("-----------\nRandomly deleted node, whole tree:");
 	prettyPrint(N);
 }
 
@@ -200,5 +206,6 @@ void evaluateEffort() {
 }
 
 int main() {
+	srand48(time(NULL));
 	demo();
 }

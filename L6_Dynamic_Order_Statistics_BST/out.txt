@@ -1,5 +1,5 @@
 g++     /home/ubuntu/workspace/AF/lab6-OrdStBST.cpp  -lcrypt -lcs50 -lm -o /home/ubuntu/workspace/AF/lab6-OrdStBST
-
+Whole tree: 
                               11[2]
 
                                              10[1]
@@ -21,16 +21,22 @@ g++     /home/ubuntu/workspace/AF/lab6-OrdStBST.cpp  -lcrypt -lcs50 -lm -o /home
                                              2[1]
 
                               1[2]
+
+Randomly selected node and subtree:
+               2[1]
+
+1[2]
 -----------
-                              11[2]
+Randomly deleted node, whole tree:
+                              11[1]
 
-                                             10[1]
+               10[4]
 
-               9[4]
+                              8[2]
 
-                              8[1]
+                                             7[1]
 
-7[10]
+6[10]
 
                               5[2]
 
