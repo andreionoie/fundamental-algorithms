@@ -203,9 +203,11 @@ void TREE_DELETE(Node** root, Node* z) {
 	
 	if (z->left == NULL) {
 		TRANSPLANT(root, z, z->right);
+		decrSize(z->parent);
 	} else if (z->right == NULL) {
 		countOperations++; // cmp above
 		TRANSPLANT(root, z, z->left);
+		decrSize(z->parent);
 	} else {
 		countOperations++; // cmp above
 		
