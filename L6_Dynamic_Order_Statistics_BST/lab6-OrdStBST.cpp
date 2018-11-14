@@ -1,10 +1,22 @@
+/*
+	from the graph we can observe that the management
+	operations have linear runnning time
+*/
+
+#include "profiler/Profiler.h"
 #include <cstdio>
 #include <cstdlib>
 #include <cassert>
 #include <ctime>
 
-#define COUNT 15
+#define WHSPACE 15
+
 #define AVG_CASE_TRIALS 5
+#define DIM_MIN 100
+#define DIM_MAX 10000
+#define STEP_SIZE 100
+#define RANGE_MIN 1
+#define RANGE_MAX 100000
 
 unsigned long int countOperations = 0;
 
@@ -13,6 +25,36 @@ typedef struct Node {
 	int size;
 	Node *parent, *left, *right;
 } Node;
+
+Node* newNode(int key);
+void freeTree(Node *root);
+Node* TREE_MINIMUM(Node* root);
+void prettyPrint(Node *root, int space);
+void setNodeSize(Node *root);
+void decrSize(Node* node);
+
+Node* fillTree(Node *root, int l, int r, Node *parent);
+Node* BUILD_TREE(int max);
+Node* OS_SELECT(Node* x, int i);
+void TRANSPLANT(Node** root, Node* u, Node* v);
+void TREE_DELETE(Node** root, Node* z);
+void OS_DELETE(Node** root, int i);
+
+int getRandom(int max);
+void demo();
+void evaluateEffort();
+
+Profiler profiler("Dynamic_Order_Statistics");
+
+int main() {
+	srand48(time(NULL));
+	demo();
+	evaluateEffort();
+}
+
+int getRandom(int max) {
+	return (int) 1 + drand48() * (max - 1);
+}
 
 Node* newNode(int key) {
 	Node* n = (Node*) calloc(1, sizeof(Node));
@@ -24,6 +66,16 @@ Node* newNode(int key) {
 	return n;
 }
 
+// postorder
+void freeTree(Node *root) {
+	if (root == NULL) return;
+	
+	freeTree(root->left);
+	freeTree(root->right);
+	memset(root, 0, sizeof root);
+	free(root);
+}
+
 // reverse inorder traversal
 void prettyPrint(Node *root, int space=0) {
     // Base case
@@ -31,30 +83,19 @@ void prettyPrint(Node *root, int space=0) {
         return;
 
     // Increase distance between levels
-    space += COUNT;
+    space += WHSPACE;
 
     // Process right child first
     prettyPrint(root->right, space);
 
     // Print current node after spaces
     printf("\n");
-    for (int i = COUNT; i < space; i++)
+    for (int i = WHSPACE; i < space; i++)
         printf(" ");
     printf("%d[%d]\n", root->key, root->size);
 
     // Process left child
     prettyPrint(root->left, space);
-}
-
-void subtractNodeSizes(Node *root) {
-	countOperations++;
-	if (root == NULL)
-		return;
-	subtractNodeSizes(root->left);
-	subtractNodeSizes(root->right);
-	root->size--;
-	
-	countOperations++;
 }
 
 void setNodeSize(Node *root) {
@@ -100,16 +141,22 @@ Node* BUILD_TREE(int max) {
 
 // resembles quickselect / randomized_select from L3
 Node* OS_SELECT(Node* x, int i) {
+	countOperations++;
 	if (x == NULL) return x;
 
 	int r = (x->left ? x->left->size : 0) + 1;
-
-	if (i == r)
+	countOperations += 2; // cmp + assign
+	
+	if (i == r) {
+		countOperations++;
 		return x;
-	else if (i < r)
+	} else if (i < r) {
+		countOperations += 2;
 		return OS_SELECT(x->left, i);
-	else
+	} else {
+		countOperations += 2;
 		return OS_SELECT(x->right, i - r);
+	}
 }
 
 Node* TREE_MINIMUM(Node* root) {
@@ -152,6 +199,8 @@ void decrSize(Node* node) {
 }
 
 void TREE_DELETE(Node** root, Node* z) {
+	if (z == NULL) return;
+	
 	if (z->left == NULL) {
 		TRANSPLANT(root, z, z->right);
 	} else if (z->right == NULL) {
@@ -180,6 +229,7 @@ void TREE_DELETE(Node** root, Node* z) {
 	}
 	
 	countOperations++;
+	memset(z, 0, sizeof z);
 	free(z);
 }
 
@@ -191,21 +241,51 @@ void OS_DELETE(Node** root, int i) {
 void demo() {
 	int treeSize = 11;
 	Node *N = BUILD_TREE(treeSize);
+	int randomNode = getRandom(treeSize);
 	printf("Whole tree: ");
 	prettyPrint(N);
 	printf("\nRandomly selected node and subtree:");
-	prettyPrint(OS_SELECT(N, (int) 1 + drand48() * (treeSize - 1)));
-	OS_DELETE(&N, (int) 1 + drand48() * (treeSize - 1));
+	prettyPrint(OS_SELECT(N, randomNode));
+	OS_DELETE(&N,randomNode);
 	
 	printf("-----------\nRandomly deleted node, whole tree:");
 	prettyPrint(N);
+	freeTree(N);
 }
 
 void evaluateEffort() {
+	char *series[] = { "BUILD_TREE", "OS_SELECT", "OS_DELETE", "total" };
+	int totalOps;
 	
-}
+	for (int k=0; k < AVG_CASE_TRIALS; k++) {
+		for (int n = DIM_MIN; n <= DIM_MAX; n += STEP_SIZE) {
+			countOperations = 0, totalOps = 0;
+			Node *N = BUILD_TREE(n);
+			profiler.countOperation(series[0], n, countOperations);
+			totalOps += countOperations;
+			
+			for (int i=n; i > 0; i--) {
+				int randomNode = getRandom(i);
+				
+				countOperations = 0;
+				OS_SELECT(N, randomNode);
+				profiler.countOperation(series[1], n, countOperations);
+				totalOps += countOperations;
+				
+				countOperations = 0;
+				OS_DELETE(&N, randomNode);
+				profiler.countOperation(series[2], n, countOperations);
+				totalOps += countOperations;
+			}
+			
+			profiler.countOperation(series[3], n, totalOps);
+			freeTree(N);
+		}
+	}
 
-int main() {
-	srand48(time(NULL));
-	demo();
+	for (int i=0; i < 4; i++)
+		profiler.divideOperation(series[i], AVG_CASE_TRIALS, DIM_MIN, DIM_MAX, STEP_SIZE);
+	
+	profiler.createGroup("OrderStatistics", series[0], series[1], series[2], series[3]);		
+	profiler.showReport();
 }
