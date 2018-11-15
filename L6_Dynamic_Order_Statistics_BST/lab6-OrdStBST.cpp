@@ -190,6 +190,7 @@ void TRANSPLANT(Node** root, Node* u, Node* v) {
     countOperations++;
 }
 
+// worst case = O(h) height of tree
 void decrSize(Node* node) {
 	while (node != NULL) {
 		node->size--;
