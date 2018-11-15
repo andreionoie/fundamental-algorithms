@@ -40,27 +40,52 @@ typedef struct NodeR2 {
 // on the right (i.e. the next brother node)  
 typedef struct NodeR3 {
 	int key;
-	NodeR2 *child, *brother;
-}
+	NodeR3 *child, *brother;
+} NodeR3;
 
 NodeR1** buildTreeR1(int* parents, int n) {
-	NodeR1 **nodes = calloc(n+1, sizeof(NodeR1*));
+	NodeR1 **nodes = (NodeR1**) calloc(n+1, sizeof(NodeR1 *));
+	assert(nodes);
 	
 	for (int i=1; i <= n; i++) {
-		nodes[i] = calloc(1, sizeof(NodeR1));
+		nodes[i] = (NodeR1*) calloc(1, sizeof(NodeR1));
+		assert(nodes[i]);
+		
 		nodes[i]->key = i;
 	}
 	
 	for (int i=1; i <= n; i++)
 		if (parents[i-1] > 0)
 			nodes[i]->parent = nodes[parents[i-1]];
+			
+	return nodes;
 }
 
 void printTreeR1(NodeR1** nodes, int n) {
 	for (int i=1; i <= n; i++)
-		printf("%d[%d] ", nodes[i]->key, nodes[i]->parent->key);
+		printf("%d[%d] ", nodes[i]->key, (nodes[i]->parent ? nodes[i]->parent->key : -1));
 	
 	printf("\n");
+}
+
+void printTreeR2(NodeR2* root, int level=0) {
+    if (root == NULL) return;
+
+    // Increase distance between levels
+    level += WHSPACE*10;
+	int j;
+    // Process right half of children first
+    for (j=root->nbOfChildren - 1; j >= root->nbOfChildren/2; j--)
+    	printTreeR2(root->children[j], level);
+
+    // Print current node after spaces
+    printf("\n");
+    for (int i = WHSPACE; i < level; i++) printf(" ");
+    printf("%d\n", root->key);
+
+    // Process left half of children first
+    for (; j >=0 ; j--)
+    	printTreeR2(root->children[j], level);
 }
 
 void printTreeR3(NodeR3* root, int level=0) {
@@ -69,6 +94,18 @@ void printTreeR3(NodeR3* root, int level=0) {
 	for (int i=0; i < level; i++) printf(" ");
 	printf("%d\n", root->key);
 	
-	printTree(root->child, level + WHSPACE);
-	printTree(root->brother, level);
+	printTreeR3(root->child, level + WHSPACE);
+	printTreeR3(root->brother, level);
+}
+
+void demo() {
+	int P[] = { 2, 7, 5, 2, 7, 7, -1, 5, 2 };
+	int n = sizeof P / sizeof(int);
+	
+	NodeR1** tree = buildTreeR1(P, n);
+	printTreeR1(tree, n);
+}
+
+int main() {
+	demo();
 }
