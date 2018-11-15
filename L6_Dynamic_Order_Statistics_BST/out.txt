@@ -22,27 +22,7 @@ Whole tree:
                               1[2]
 
 Randomly selected node and subtree:
-                              11[2]
-
-                                             10[1]
-
-               9[5]
-
-                              8[2]
-
-                                             7[1]
-
-6[11]
-
-                              5[2]
-
-                                             4[1]
-
-               3[5]
-
-                                             2[1]
-
-                              1[2]
+7[1]
 -----------
 Randomly deleted node, whole tree:
                               11[2]
@@ -53,13 +33,349 @@ Randomly deleted node, whole tree:
 
                               8[1]
 
-7[10]
+6[10]
 
                               5[2]
 
                                              4[1]
 
                3[5]
+
+                                             2[1]
+
+                              1[2]
+Whole tree: 
+                              11[2]
+
+                                             10[1]
+
+               9[5]
+
+                              8[2]
+
+                                             7[1]
+
+6[11]
+
+                              5[2]
+
+                                             4[1]
+
+               3[5]
+
+                                             2[1]
+
+                              1[2]
+
+Randomly selected node and subtree:
+10[1]
+-----------
+Randomly deleted node, whole tree:
+                              11[1]
+
+               9[4]
+
+                              8[2]
+
+                                             7[1]
+
+6[10]
+
+                              5[2]
+
+                                             4[1]
+
+               3[5]
+
+                                             2[1]
+
+                              1[2]
+Whole tree: 
+                              11[2]
+
+                                             10[1]
+
+               9[5]
+
+                              8[2]
+
+                                             7[1]
+
+6[11]
+
+                              5[2]
+
+                                             4[1]
+
+               3[5]
+
+                                             2[1]
+
+                              1[2]
+
+Randomly selected node and subtree:
+8[2]
+
+               7[1]
+-----------
+Randomly deleted node, whole tree:
+                              11[2]
+
+                                             10[1]
+
+               9[4]
+
+                              7[1]
+
+6[10]
+
+                              5[2]
+
+                                             4[1]
+
+               3[5]
+
+                                             2[1]
+
+                              1[2]
+Whole tree: 
+                              11[2]
+
+                                             10[1]
+
+               9[5]
+
+                              8[2]
+
+                                             7[1]
+
+6[11]
+
+                              5[2]
+
+                                             4[1]
+
+               3[5]
+
+                                             2[1]
+
+                              1[2]
+
+Randomly selected node and subtree:
+5[2]
+
+               4[1]
+-----------
+Randomly deleted node, whole tree:
+                              11[2]
+
+                                             10[1]
+
+               9[5]
+
+                              8[2]
+
+                                             7[1]
+
+6[10]
+
+                              4[1]
+
+               3[4]
+
+                                             2[1]
+
+                              1[2]
+Whole tree: 
+                              11[2]
+
+                                             10[1]
+
+               9[5]
+
+                              8[2]
+
+                                             7[1]
+
+6[11]
+
+                              5[2]
+
+                                             4[1]
+
+               3[5]
+
+                                             2[1]
+
+                              1[2]
+
+Randomly selected node and subtree:
+               5[2]
+
+                              4[1]
+
+3[5]
+
+                              2[1]
+
+               1[2]
+-----------
+Randomly deleted node, whole tree:
+                              11[2]
+
+                                             10[1]
+
+               9[5]
+
+                              8[2]
+
+                                             7[1]
+
+6[10]
+
+                              5[1]
+
+               4[4]
+
+                                             2[1]
+
+                              1[2]
+Whole tree: 
+                              11[2]
+
+                                             10[1]
+
+               9[5]
+
+                              8[2]
+
+                                             7[1]
+
+6[11]
+
+                              5[2]
+
+                                             4[1]
+
+               3[5]
+
+                                             2[1]
+
+                              1[2]
+
+Randomly selected node and subtree:
+10[1]
+-----------
+Randomly deleted node, whole tree:
+                              11[1]
+
+               9[4]
+
+                              8[2]
+
+                                             7[1]
+
+6[10]
+
+                              5[2]
+
+                                             4[1]
+
+               3[5]
+
+                                             2[1]
+
+                              1[2]
+Whole tree: 
+                              11[2]
+
+                                             10[1]
+
+               9[5]
+
+                              8[2]
+
+                                             7[1]
+
+6[11]
+
+                              5[2]
+
+                                             4[1]
+
+               3[5]
+
+                                             2[1]
+
+                              1[2]
+
+Randomly selected node and subtree:
+7[1]
+-----------
+Randomly deleted node, whole tree:
+                              11[2]
+
+                                             10[1]
+
+               9[4]
+
+                              8[1]
+
+6[10]
+
+                              5[2]
+
+                                             4[1]
+
+               3[5]
+
+                                             2[1]
+
+                              1[2]
+Whole tree: 
+                              11[2]
+
+                                             10[1]
+
+               9[5]
+
+                              8[2]
+
+                                             7[1]
+
+6[11]
+
+                              5[2]
+
+                                             4[1]
+
+               3[5]
+
+                                             2[1]
+
+                              1[2]
+
+Randomly selected node and subtree:
+5[2]
+
+               4[1]
+-----------
+Randomly deleted node, whole tree:
+                              11[2]
+
+                                             10[1]
+
+               9[5]
+
+                              8[2]
+
+                                             7[1]
+
+6[10]
+
+                              4[1]
+
+               3[4]
 
                                              2[1]
 
@@ -134,14 +450,12 @@ Whole tree:
                               1[2]
 
 Randomly selected node and subtree:
-2[1]
+10[1]
 -----------
 Randomly deleted node, whole tree:
-                              11[2]
+                              11[1]
 
-                                             10[1]
-
-               9[5]
+               9[4]
 
                               8[2]
 
@@ -153,9 +467,11 @@ Randomly deleted node, whole tree:
 
                                              4[1]
 
-               3[4]
+               3[5]
 
-                              1[1]
+                                             2[1]
+
+                              1[2]
 Whole tree: 
                               11[2]
 
@@ -180,40 +496,18 @@ Whole tree:
                               1[2]
 
 Randomly selected node and subtree:
-2[1]
+7[1]
 -----------
 Randomly deleted node, whole tree:
                               11[2]
 
                                              10[1]
 
-               9[5]
+               9[4]
 
-                              8[2]
-
-                                             7[1]
+                              8[1]
 
 6[10]
-
-                              5[2]
-
-                                             4[1]
-
-               3[4]
-
-                              1[1]
-Whole tree: 
-                              11[2]
-
-                                             10[1]
-
-               9[5]
-
-                              8[2]
-
-                                             7[1]
-
-6[11]
 
                               5[2]
 
@@ -224,303 +518,3 @@ Whole tree:
                                              2[1]
 
                               1[2]
-
-Randomly selected node and subtree:
-2[1]
------------
-Randomly deleted node, whole tree:
-                              11[2]
-
-                                             10[1]
-
-               9[5]
-
-                              8[2]
-
-                                             7[1]
-
-6[10]
-
-                              5[2]
-
-                                             4[1]
-
-               3[4]
-
-                              1[1]
-Whole tree: 
-                              11[2]
-
-                                             10[1]
-
-               9[5]
-
-                              8[2]
-
-                                             7[1]
-
-6[11]
-
-                              5[2]
-
-                                             4[1]
-
-               3[5]
-
-                                             2[1]
-
-                              1[2]
-
-Randomly selected node and subtree:
-2[1]
------------
-Randomly deleted node, whole tree:
-                              11[2]
-
-                                             10[1]
-
-               9[5]
-
-                              8[2]
-
-                                             7[1]
-
-6[10]
-
-                              5[2]
-
-                                             4[1]
-
-               3[4]
-
-                              1[1]
-Whole tree: 
-                              11[2]
-
-                                             10[1]
-
-               9[5]
-
-                              8[2]
-
-                                             7[1]
-
-6[11]
-
-                              5[2]
-
-                                             4[1]
-
-               3[5]
-
-                                             2[1]
-
-                              1[2]
-
-Randomly selected node and subtree:
-2[1]
------------
-Randomly deleted node, whole tree:
-                              11[2]
-
-                                             10[1]
-
-               9[5]
-
-                              8[2]
-
-                                             7[1]
-
-6[10]
-
-                              5[2]
-
-                                             4[1]
-
-               3[4]
-
-                              1[1]
-Whole tree: 
-                              11[2]
-
-                                             10[1]
-
-               9[5]
-
-                              8[2]
-
-                                             7[1]
-
-6[11]
-
-                              5[2]
-
-                                             4[1]
-
-               3[5]
-
-                                             2[1]
-
-                              1[2]
-
-Randomly selected node and subtree:
-2[1]
------------
-Randomly deleted node, whole tree:
-                              11[2]
-
-                                             10[1]
-
-               9[5]
-
-                              8[2]
-
-                                             7[1]
-
-6[10]
-
-                              5[2]
-
-                                             4[1]
-
-               3[4]
-
-                              1[1]
-Whole tree: 
-                              11[2]
-
-                                             10[1]
-
-               9[5]
-
-                              8[2]
-
-                                             7[1]
-
-6[11]
-
-                              5[2]
-
-                                             4[1]
-
-               3[5]
-
-                                             2[1]
-
-                              1[2]
-
-Randomly selected node and subtree:
-2[1]
------------
-Randomly deleted node, whole tree:
-                              11[2]
-
-                                             10[1]
-
-               9[5]
-
-                              8[2]
-
-                                             7[1]
-
-6[10]
-
-                              5[2]
-
-                                             4[1]
-
-               3[4]
-
-                              1[1]
-Whole tree: 
-                              11[2]
-
-                                             10[1]
-
-               9[5]
-
-                              8[2]
-
-                                             7[1]
-
-6[11]
-
-                              5[2]
-
-                                             4[1]
-
-               3[5]
-
-                                             2[1]
-
-                              1[2]
-
-Randomly selected node and subtree:
-2[1]
------------
-Randomly deleted node, whole tree:
-                              11[2]
-
-                                             10[1]
-
-               9[5]
-
-                              8[2]
-
-                                             7[1]
-
-6[10]
-
-                              5[2]
-
-                                             4[1]
-
-               3[4]
-
-                              1[1]
-Whole tree: 
-                              11[2]
-
-                                             10[1]
-
-               9[5]
-
-                              8[2]
-
-                                             7[1]
-
-6[11]
-
-                              5[2]
-
-                                             4[1]
-
-               3[5]
-
-                                             2[1]
-
-                              1[2]
-
-Randomly selected node and subtree:
-2[1]
------------
-Randomly deleted node, whole tree:
-                              11[2]
-
-                                             10[1]
-
-               9[5]
-
-                              8[2]
-
-                                             7[1]
-
-6[10]
-
-                              5[2]
-
-                                             4[1]
-
-               3[4]
-
-                              1[1]
