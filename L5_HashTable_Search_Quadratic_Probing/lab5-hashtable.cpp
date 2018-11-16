@@ -158,7 +158,7 @@ Entry* hashFind(HashTable* T, int id) {
 void demo() {
 	HashTable* T = createHashTable(10);
 	hashInsert(T, createEntry(1, "fall"));
-	hashInsert(T, createEntry(3, "leaves"));
+	hashInsert(T, createEntry(1, "leaves"));
 	hashInsert(T, createEntry(7, "after"));
 	hashInsert(T, createEntry(2, "leaves"));
 	hashInsert(T, createEntry(5, "fall"));
@@ -175,9 +175,9 @@ void demo() {
 	printf("Found entry with id=%d, name=%s, index=%d\n",
 			eFound->id, eFound->name, hashSearch(T, eFound));
 
-	eFound = hashFind(T, 3);
-	printf("Found entry with id=%d, name=%s, index=%d\n",
-			eFound->id, eFound->name, hashSearch(T, eFound));
+//	eFound = hashFind(T, 3);
+//	printf("Found entry with id=%d, name=%s, index=%d\n",
+		//	eFound->id, eFound->name, hashSearch(T, eFound));
 
 	eFound = hashFind(T, 1);
 	printf("Found entry with id=%d, name=%s, index=%d\n",
