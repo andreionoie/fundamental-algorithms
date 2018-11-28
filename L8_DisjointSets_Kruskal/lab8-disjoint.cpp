@@ -10,8 +10,14 @@
 
 Profiler profiler("Disjoint_Sets_Kruskal");
 
+typedef struct {
+	int u, v;
+	int w;	// weight
+} Edge;
+
 typedef struct TreeNode {
 	int key;
+	Edge edge;
 	int rank;
 	TreeNode* parent;
 	TreeNode* next;	// next in set
@@ -20,6 +26,8 @@ typedef struct TreeNode {
 
 void		demo();
 
+
+int			cmpEdge(Edge* e1, Edge* e2);
 void		swapNext(TreeNode* x, TreeNode* y);
 TreeNode*	newNode(int key);
 TreeNode*	MAKE_SET(int key);
@@ -90,6 +98,9 @@ void demo() {
 	}
 }
 
+int cmpEdge(Edge* e1, Edge* e2) {
+	return e1->w - e2->w;	
+}
 
 void swapNext(TreeNode* x, TreeNode* y) {
 	TreeNode* tmp = x->next;
