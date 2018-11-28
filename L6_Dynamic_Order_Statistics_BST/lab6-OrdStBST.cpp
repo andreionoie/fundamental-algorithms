@@ -49,7 +49,7 @@ Profiler profiler("Dynamic_Order_Statistics");
 int main() {
 	srand48(time(NULL));
 	demo();
-	evaluateEffort();
+	// evaluateEffort();
 }
 
 int getRandom(int max) {
@@ -247,12 +247,14 @@ void demo() {
 	int randomNode = getRandom(treeSize);
 	printf("Whole tree: ");
 	prettyPrint(N);
-	printf("\nRandomly selected node and subtree:");
-	prettyPrint(OS_SELECT(N, randomNode));
-	OS_DELETE(&N,randomNode);
-	
-	printf("-----------\nRandomly deleted node, whole tree:");
-	prettyPrint(N);
+	for (int i=0; i < 3; i++) {
+		printf("\nRandomly selected node and subtree:");
+		prettyPrint(OS_SELECT(N, randomNode));
+		OS_DELETE(&N,randomNode);
+		
+		printf("-----------\nRandomly deleted node, whole tree:");
+		prettyPrint(N);
+	}
 	freeTree(N);
 }
 
@@ -271,12 +273,13 @@ void evaluateEffort() {
 				int randomNode = getRandom(i);
 				
 				countOperations = 0;
-				OS_SELECT(N, randomNode);
+				Node* toBeDeleted = OS_SELECT(N, randomNode);
 				profiler.countOperation(series[1], n, countOperations);
 				totalOps += countOperations;
 				
 				countOperations = 0;
-				OS_DELETE(&N, randomNode);
+				//OS_DELETE(&N, randomNode);
+				TREE_DELETE(&N, toBeDeleted);
 				profiler.countOperation(series[2], n, countOperations);
 				totalOps += countOperations;
 			}
