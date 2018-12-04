@@ -17,7 +17,6 @@ typedef struct {
 
 typedef struct TreeNode {
 	int key;
-	Edge edge;
 	int rank;
 	TreeNode* parent;
 	TreeNode* next;	// next in set
@@ -25,9 +24,13 @@ typedef struct TreeNode {
 
 
 void		demo();
+void testKruskal();
 
+unsigned int getRandom(int max);
 
 int			cmpEdge(Edge* e1, Edge* e2);
+Edge*		newEdge(int u, int v, int w);
+
 void		swapNext(TreeNode* x, TreeNode* y);
 TreeNode*	newNode(int key);
 TreeNode*	MAKE_SET(int key);
@@ -37,8 +40,13 @@ void		UNION(TreeNode* x, TreeNode* y);
 
 void		printSet(TreeNode* x);
 
+Edge* MST_Kruskal(Edge** edges, int E, int V);
+Edge** buildRandomEdges(int V);
+
 int main() {
-	demo();
+	srand48(time(NULL));
+	//demo();
+	testKruskal();
 	return 0;
 }
 
@@ -98,8 +106,26 @@ void demo() {
 	}
 }
 
-int cmpEdge(Edge* e1, Edge* e2) {
-	return e1->w - e2->w;	
+unsigned int getRandom(int max) {
+	double d = drand48();  // gives you a double from 0 to 1
+	double val = d * max;	  // gives you a double from 0 to max
+
+	return (unsigned int) round(val);
+}
+
+int cmpEdge(const void* a, const void* b) {
+	Edge *e1 = *(Edge**) a;
+	Edge *e2 = *(Edge**) b;
+	
+	return (e1->w - e2->w);	
+}
+
+Edge* newEdge(int u, int v, int w) {
+	Edge* e = (Edge*) malloc(sizeof(Edge));
+	e->u = u;
+	e->v = v;
+	e->w = w;
+	return e;
 }
 
 void swapNext(TreeNode* x, TreeNode* y) {
@@ -154,4 +180,67 @@ void printSet(TreeNode* x) {
 		trav = trav->next;
 	}
 	printf("} ");
+}
+
+
+Edge* MST_Kruskal(Edge** edges, int E, int V) {
+	Edge* A = (Edge*) calloc(E, sizeof(Edge));
+	int k=0; // A's iterator
+	
+	TreeNode** tree = (TreeNode**) calloc(V, sizeof(TreeNode*));
+	for (int i=0; i < V; i++)
+		tree[i] = MAKE_SET(i);	
+	
+	qsort(edges, E, sizeof(Edge*), cmpEdge);
+	for (int i=0; i < E; i++) {
+		printf("%d<->%d[%d]\n", edges[i]->u, edges[i]->v, edges[i]->w);
+	}
+	printf("\n\n");
+	for (int i=0; i < E; i++) {
+		if (FIND_SET(tree[edges[i]->u]) != FIND_SET(tree[edges[i]->v])) {
+			A[k++] = *edges[i];
+			UNION(tree[edges[i]->u], tree[edges[i]->v]);
+		}
+	}
+	
+	for (int i=0; i < k; i++) {
+		printf("[%d,%d] ", A[i].u, A[i].v);
+	}
+	printf("\n");
+	return A;
+}
+
+void testKruskal() {
+	int V = 20, E = 16; // from 0 to 8
+	// Edge **edges = (Edge**) calloc(E, sizeof(Edge*));
+	
+	// edges[0] = newEdge(0, 1, 8);
+	// edges[1] = newEdge(0, 2, 12);
+	// edges[2] = newEdge(1, 2, 13);
+	// edges[3] = newEdge(1, 3, 25);
+	// edges[4] = newEdge(1, 4, 9);
+	// edges[5] = newEdge(2, 3, 14);
+	// edges[6] = newEdge(2, 6, 21);
+	// edges[7] = newEdge(3, 4, 20);
+	// edges[8] = newEdge(3, 5, 8);
+	// edges[9] = newEdge(3, 6, 12);
+	// edges[10] = newEdge(3, 7, 12);
+	// edges[11] = newEdge(3, 8, 16);
+	// edges[12] = newEdge(4, 5, 19);
+	// edges[13] = newEdge(5, 7, 11);
+	// edges[14] = newEdge(6, 8, 11);
+	// edges[15] = newEdge(7, 8, 9);
+	Edge **edges = buildRandomEdges(V);
+	MST_Kruskal(edges, V*4, V);
+}
+
+Edge** buildRandomEdges(int V) {
+	Edge **edges = (Edge**) calloc(V*4, sizeof(Edge*));
+	
+	for (int i=0; i < V*4; i++) {
+		int u = getRandom(V-2);
+		edges[i] = newEdge(u, u + 1 + getRandom(V - u - 2), 1 + getRandom(50));
+	}
+	
+	return edges;
 }

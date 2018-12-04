@@ -106,14 +106,6 @@ NodeR3* R2toR3_subtree(NodeR2 *rootR2, NodeR3 *rootR3) {
 		trav->brother = R2toR3_subtree(rootR2->children[i], trav->brother);	
 		trav = trav->brother;
 	}
-	
-	// recurse on all of the copied children
-	// trav = rootR3->child;
-	
-	// for (int i=0; i < rootR2->nbOfChildren; i++) {
-	// 	trav = R2toR3_subtree(rootR2->children[i], trav);
-	// 	trav = trav->brother;
-	// }
 
 	return rootR3;
 }
@@ -128,27 +120,7 @@ NodeR3* R2toR3(NodeR2* rootR2) {
 	rootR3->key = rootR2->key;
 	// build tree recursively
 	rootR3 = R2toR3_subtree(rootR2, rootR3);
-	// if (rootR2->nbOfChildren > 0) {
-	// 	// copy first child
-	// 	rootR3->child = (NodeR3*) calloc(1, sizeof(NodeR3));
-	// 	rootR3->child->key = rootR2->children[0]->key;
-		
-	// 	// copy rest of children
-	// 	NodeR3* trav = rootR3->child;
-	// 	for (int i=1; i < rootR2->nbOfChildren; i++) {
-	// 		trav->brother = (NodeR3*) calloc(1, sizeof(NodeR3));
-	// 		trav->brother->key = rootR2->children[i]->key;
-	// 		trav = trav->brother;
-	// 	}
-		
-	// 	// recurse on children
-	// 	trav = rootR3->child;
-	// 	for (int i=0; i < rootR2->nbOfChildren; i++) {
-	// 		trav = R2toR3_subtree(rootR2->children[i], trav);
-	// 		trav = trav->brother;
-	// 	}
-	// }
-	
+
 	return rootR3;
 }
 
@@ -170,7 +142,6 @@ void printTreeR2_alt(NodeR2* root, int level=0, char *prefix = "--[") {
     	printTreeR2_alt(root->children[j], level, "/~");
 
     // Print current node after spaces
-    //printf("\n"); /~4 \_
     for (int i = WHSPACE; i < level; i++) printf(" ");
 
     printf("%s%d\n", prefix, root->key);
