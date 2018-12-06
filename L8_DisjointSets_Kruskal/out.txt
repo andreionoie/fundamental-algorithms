@@ -1,37 +1,40 @@
-Initial sets: {92} {12} {166} {39} {85} {170} {142} {11} {179} {116}
+Initial sets: {19} {96} {165} {155} {157} {31} {116} {72} {91} {64}
 
-Joined 92 with 116 (set 92 with set 116)
-Sets are: {12} {166} {39} {85} {170} {142} {11} {179} {116, 92} 
-Searching for 92 yielded 116.
+Joined 19 with 64 (set 19 with set 64)
+Sets are: {96} {165} {155} {157} {31} {116} {72} {91} {64, 19} 
+Searching for 19 yielded 64.
 
-Joined 12 with 179 (set 12 with set 179)
-Sets are: {166} {39} {85} {170} {142} {11} {179, 12} {116, 92} 
-Searching for 12 yielded 179.
+Joined 96 with 91 (set 96 with set 91)
+Sets are: {165} {155} {157} {31} {116} {72} {91, 96} {64, 19} 
+Searching for 96 yielded 91.
 
-Joined 166 with 11 (set 166 with set 11)
-Sets are: {39} {85} {170} {142} {11, 166} {179, 12} {116, 92} 
-Searching for 166 yielded 11.
+Joined 165 with 72 (set 165 with set 72)
+Sets are: {155} {157} {31} {116} {72, 165} {91, 96} {64, 19} 
+Searching for 165 yielded 72.
 
-Joined 39 with 142 (set 39 with set 142)
-Sets are: {85} {170} {142, 39} {11, 166} {179, 12} {116, 92} 
-Searching for 39 yielded 142.
+Joined 155 with 116 (set 155 with set 116)
+Sets are: {157} {31} {116, 155} {72, 165} {91, 96} {64, 19} 
+Searching for 155 yielded 116.
 
-Joined 85 with 170 (set 85 with set 170)
-Sets are: {170, 85} {142, 39} {11, 166} {179, 12} {116, 92} 
-Searching for 85 yielded 170.
+Joined 157 with 31 (set 157 with set 31)
+Sets are: {31, 157} {116, 155} {72, 165} {91, 96} {64, 19} 
+Searching for 157 yielded 31.
 
-Joined 12 with 39 (set 179 with set 142)
-Sets are: {170, 85} {142, 12, 179, 39} {11, 166} {116, 92} 
-Searching for 12 yielded 142.
+Joined 96 with 155 (set 91 with set 116)
+Sets are: {31, 157} {116, 96, 91, 155} {72, 165} {64, 19} 
+Searching for 96 yielded 116.
 
-Joined 166 with 142 (set 11 with set 142)
-Sets are: {170, 85} {142, 166, 11, 12, 179, 39} {116, 92} 
-Searching for 166 yielded 142.
+Joined 165 with 116 (set 72 with set 116)
+Sets are: {31, 157} {116, 165, 72, 96, 91, 155} {64, 19} 
+Searching for 165 yielded 116.
 
-Joined 39 with 92 (set 142 with set 116)
-Sets are: {170, 85} {142, 92, 116, 166, 11, 12, 179, 39} 
-Searching for 39 yielded 142.
+Joined 155 with 19 (set 116 with set 64)
+Sets are: {31, 157} {116, 19, 64, 165, 72, 96, 91, 155} 
+Searching for 155 yielded 116.
 
-Joined 85 with 39 (set 170 with set 142)
-Sets are: {142, 85, 170, 92, 116, 166, 11, 12, 179, 39} 
-Searching for 85 yielded 142.
+Joined 157 with 155 (set 31 with set 116)
+Sets are: {116, 157, 31, 19, 64, 165, 72, 96, 91, 155} 
+Searching for 157 yielded 116.
+
+
+MST edges are: [0,1] [3,5] [1,4] [7,8] [5,7] [6,8] [0,2] [2,3] 
