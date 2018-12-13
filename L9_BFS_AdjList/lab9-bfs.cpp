@@ -17,6 +17,7 @@
 #include <cassert>
 #include <cmath>
 #include <queue>
+#include <stack>
 
 #define INFTY 0x7F7F
 
@@ -190,6 +191,37 @@ void bfs(Graph* G, int srcNode) {
 	printf("\n");
 }
 
+void prettyPrint(Graph *G) {
+	std::stack<GraphNode*> nodes;
+	GraphNode* p;
+	
+	for (int i=0; i < G->nbOfVertices; i++) {
+		if (G->vertices[i]->parent == NULL) {
+			//G->vertices[i]->distance = 0;
+			nodes.push(G->vertices[i]);
+			
+			while (! nodes.empty()) {
+				p = nodes.top();
+				nodes.pop();
+				
+				for (int i=0; i < p->distance * 4; i++) {
+					printf(" ");
+				}
+				
+				printf("%d\n", p->value);
+				
+				for (int j=G->nbOfVertices - 1; j >= 0; j--) {
+					if (G->vertices[j]->parent == p) {
+						//G->vertices[j]->distance = p->distance + 1;
+						nodes.push(G->vertices[j]);
+					}
+				}
+			}
+			
+			printf("\n");
+		}
+	}
+}
 
 void demo() {
 	Graph *g = newGraph(18);
@@ -220,6 +252,8 @@ void demo() {
 	addEdge(g, 16, 17);
 	
 	bfs(g, 9);
+	printf("Pretty printed BFS tree:\n");
+	prettyPrint(g);
 }
 
 bool edgeExists(Graph* G, int a, int b) {
