@@ -1,3 +1,14 @@
+/*
+	BFS never whitens a vertex, and thus the test ensures that each vertex
+	is enqueued at most once, and hence pushed at most once. O(V)
+	Because the procedure scans the adjacency list of each vertex
+	only when the vertex is dequed, it scans each adjacency list at most once. Since
+	the sum of the lengths of all the adjacency lists is E (directed)
+	or 2E (undirected), the total time spent in
+	scanning adjacency lists is O(E).
+
+*/
+
 #include "profiler/Profiler.h"
 #include <cstdio>
 #include <cstring>
@@ -8,6 +19,11 @@
 #include <queue>
 
 #define INFTY 0x7F7F
+
+Profiler profiler("BFS_Adjacency_List");
+
+int countOperations = 0;
+bool **edges;
 
 typedef struct ListNode {
 	int key;
@@ -35,10 +51,16 @@ typedef struct Graph {
 } Graph;
 
 
+void clearEdges() {
+	for (int i=0; i < 300; i++)
+		for (int j=0; j < 300; j++)
+			edges[i][j] = false;
+}
 GraphNode* newGraphNode(int val) {
 	GraphNode* g = (GraphNode*) calloc(1, sizeof(GraphNode));
 	g->value = val;
 	g->neighbours = (List*) calloc(1, sizeof(List));
+	countOperations++;
 	return g;
 }
 
@@ -46,6 +68,7 @@ ListNode* newListNode(int val) {
 	ListNode* p = (ListNode*) malloc(sizeof(ListNode));
     p->key = val;
     p->next = NULL;
+    countOperations++;
     return p;
 }
 
@@ -67,6 +90,8 @@ void insertFirst(List* l, int key) {
 
     l->first = p;
     l->size += 1;
+    
+    countOperations += 5;
 }
 
 void freeList(List* l) {
@@ -84,6 +109,8 @@ void addEdge(Graph* g, int a, int b) {
 	
 	insertFirst(u->neighbours, v->value);
 	insertFirst(v->neighbours, u->value);
+	edges[a][b] = true;
+	edges[b][a] = true;
 }
 
 Graph *newGraph(int V) {
@@ -106,21 +133,26 @@ void freeGraph(Graph* G) {
 		free(G->vertices[i]);
 	}
 	
+	free(G->vertices);
+	
 	free(G);
 }
 
 void bfs(Graph* G, int srcNode) {
+	assert(G != NULL);
+	
 	for (int i=0; i < G->nbOfVertices; i++) {
 		if (i != srcNode) {
 			GraphNode* u = G->vertices[i];
 			u->color = WHITE;
 			u->distance = INFTY;
 			u->parent = NULL;
+			countOperations += 4;
 		}
+		countOperations++;
 	}
 	
 	GraphNode* s = G->vertices[srcNode];
-	
 	s->color = GRAY;
 	s->distance = 0;
 	s->parent = NULL;
@@ -128,26 +160,32 @@ void bfs(Graph* G, int srcNode) {
 	std::queue <GraphNode*> Q;
 	Q.push(s);
 	
+	countOperations += 5;
+	
 	while (! Q.empty()) {
 		GraphNode* u = Q.front();
 		Q.pop();
+		countOperations++;
 		printf("%d: ", u->value);
 		ListNode* vIndex = u->neighbours->first;
 		while (vIndex) {
 			GraphNode *v = G->vertices[vIndex->key];
-			
+			countOperations += 2;
 			if (v->color == WHITE) {
 				v->color = GRAY;
 				v->distance = u->distance + 1;
 				v->parent = u;
 				Q.push(v);
-				printf("%d->", v->value);
+				countOperations += 4;
+				printf("%d ", v->value);
 			}
 			
 			vIndex = vIndex->next;
+			countOperations++;
 		}
 		printf ("\n");
 		u->color = BLACK;
+		countOperations++;
 	}
 	printf("\n");
 }
@@ -188,34 +226,108 @@ bool edgeExists(Graph* G, int a, int b) {
 	GraphNode *u = G->vertices[a];
 	GraphNode *v = G->vertices[b];
 	
-	ListNode *utrav = u->neighbours->first;
-	bool foundUtoV = false;
-	while (utrav) {
-		if (utrav->key == b) {
-			foundUtoV = true;
-			break;
+	bool foundUtoV = false, foundVtoU = false;
+	if (u->neighbours) {
+		ListNode *utrav = u->neighbours->first;
+		while (utrav) {
+			if (utrav->key == b) {
+				foundUtoV = true;
+				break;
+			}
+			utrav = utrav->next;
 		}
-		utrav = utrav->next;
 	}
 	
-	ListNode *vtrav = v->neighbours->first;
-	bool foundVtoU = false;
-	while (vtrav) {
-		if (vtrav->key == a) {
-			foundVtoU = true;
-			break;
+	if (foundUtoV == false)
+		return false;
+		
+	if (v->neighbours) {
+		ListNode *vtrav = v->neighbours->first;
+		while (vtrav) {
+			if (vtrav->key == a) {
+				foundVtoU = true;
+				break;
+			}
+			vtrav = vtrav->next;
 		}
-		utrav = utrav->next;
 	}
 	
-	return foundUtoV && foundVtoU;
+	return foundVtoU;
+}
+
+unsigned int getRandom(int max) {
+	double d = drand48();  // gives you a double from 0 to 1
+	double val = d * max;	  // gives you a double from 0 to max
+
+	return (unsigned int) round(val);
 }
 
 Graph* generateRandomGraph(int V, int E) {
 	Graph *G = newGraph(V);
+	int edgeCount = 0;
 	
+	for (int i=1; i < V; i++) {
+		addEdge(G, i, getRandom(i-1));
+		edgeCount++;
+	}
+	
+	while (edgeCount < E) {
+		int u, v;
+		do {
+			u = getRandom(V-2);
+			v = u + 1 + getRandom(V - u - 2);
+		} while (edges[u][v] || edges[v][u]);
+		
+		addEdge(G, u, v);
+		edgeCount++;
+	}
+	return G;
+}
+
+void edgeVariation() {
+	Graph *G;
+	int V = 100;
+	
+	for (int E = 1000; E <= 4900; E += 100) {
+		clearEdges();
+		G = generateRandomGraph(V, E);
+		countOperations = 0;
+		bfs(G, getRandom(V-1));
+		profiler.countOperation("V_100", E, countOperations);
+		freeGraph(G);
+	}
+}
+
+void vertVariation() {
+	Graph *G;
+	int E = 4500;
+	
+	for (int V = 100; V <= 200; V += 10) {
+		clearEdges();
+		G = generateRandomGraph(V, E);
+		countOperations = 0;
+		bfs(G, getRandom(V-1));
+		profiler.countOperation("E_4500", V, countOperations);
+		freeGraph(G);
+	}
+}
+
+void evaluateBFS() {
+	edgeVariation();
+	vertVariation();
+	profiler.showReport();
 }
 
 int main() {
+	srand48(time(NULL));
+	edges = (bool**) calloc(300, sizeof(bool*));
+	for (int i=0; i < 300; i++) {
+		edges[i] = (bool*) calloc(300, sizeof(bool));
+	}
+	
+	
+	
+	clearEdges();
 	demo();
+	//evaluateBFS();
 }
