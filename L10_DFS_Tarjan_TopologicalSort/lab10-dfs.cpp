@@ -17,6 +17,9 @@ int countOperations = 0;
 int dfsTime = 0;
 bool **edges;
 
+int indexGlb = 0;
+bool *onStack;
+
 typedef struct ListNode {
 	int key;
 	ListNode* next;
@@ -36,12 +39,18 @@ typedef struct GraphNode {
 	int discovered, finished;
 	int component;
 	Color color;
+	
+	// Tarjan attributes
+	int index;
+	int lowlink;
 } GraphNode;
 
 typedef struct Graph {
 	int nbOfVertices;
 	GraphNode **vertices;
 } Graph;
+
+std::stack<GraphNode*> S;
 
 void clearEdges() {
 	for (int i=0; i < 300; i++)
@@ -132,6 +141,7 @@ Graph *newGraph(int V) {
 	g->vertices = (GraphNode**) calloc(V, sizeof(GraphNode*));
 	for (int i=0; i < V; i++) {
 		g->vertices[i] = newGraphNode(i);
+		g->vertices[i]->index = -1;
 	}
 	
 	return g;
@@ -163,6 +173,8 @@ void DFS_VISIT(Graph* G, GraphNode* u, List* topoOrder) {
 	u->discovered = dfsTime;		// white vertex u has just been discovered
 	u->color = GRAY;
 	
+	countOperations += 3;
+	
 	if (u->neighbours) {
 		ListNode* vIndex = u->neighbours->first;
 		
@@ -175,6 +187,7 @@ void DFS_VISIT(Graph* G, GraphNode* u, List* topoOrder) {
 				v->parent = u;
 				printf("tree edge\n");
 				DFS_VISIT(G, v, topoOrder);
+				countOperations++;
 			} else {
 				if (v->color == GRAY)
 					printf("back edge\n");
@@ -185,7 +198,10 @@ void DFS_VISIT(Graph* G, GraphNode* u, List* topoOrder) {
 			}
 
 			vIndex = vIndex->next;
+			countOperations += 3;
 		}
+		
+		countOperations += 2;
 	}
 	
 	u->color = BLACK;				// blacken u; it is finished
@@ -210,6 +226,8 @@ List* DFS(Graph *G) {
 		
 		if (u->color == WHITE)
 			DFS_VISIT(G, u, topoOrder);
+			
+		countOperations++;
 	}
 	
 	return topoOrder;
@@ -250,7 +268,171 @@ void prettyPrint(Graph *G) {
 	free(distance);
 }
 
-void demo() {
+void strongConnect(GraphNode* v, Graph* G) {
+	v->index = indexGlb;
+	v->lowlink = indexGlb;
+	indexGlb++;
+	
+	S.push(v);
+	onStack[v->value] = true;
+	
+	if (v->neighbours) {
+		ListNode* uIndex = v->neighbours->first;
+		while (uIndex) {
+			GraphNode* u = G->vertices[uIndex->key]; // explore edge (u, v)
+			
+			if (u->index == -1) {
+				strongConnect(u, G);
+				v->lowlink = std::min(v->lowlink, u->lowlink);
+			} else if (onStack[u->value]) {
+				v->lowlink = std::min(v->lowlink, u->index);
+			}
+
+			uIndex = uIndex->next;
+		}
+	}
+	
+	if (v->lowlink == v->index) {
+		printf("New strongly connected component: ");
+		GraphNode* u;
+		do {
+			u = S.top();
+			printf("%d ", u->value);
+			S.pop();
+			onStack[u->value] = false;
+		} while (u != v);
+		printf("\n");
+	}
+}
+
+void Tarjan(Graph* G) {
+	indexGlb = 0;
+	S.empty();
+	onStack = (bool*) calloc(G->nbOfVertices, sizeof(bool));
+	
+	for (int i=0; i < G->nbOfVertices; i++)
+		if (G->vertices[i]->index == -1)
+			strongConnect(G->vertices[i], G);
+			
+	free(onStack);
+}
+
+void DFS_VISIT_strongConnect(Graph* G, GraphNode* u, List* topoOrder) {
+	dfsTime++;
+	u->discovered = dfsTime;		// white vertex u has just been discovered
+	u->color = GRAY;
+	
+	u->index = indexGlb;
+	u->lowlink = indexGlb;
+	indexGlb++;
+	
+	S.push(u);
+	onStack[u->value] = true;
+	
+	if (u->neighbours) {
+		ListNode* vIndex = u->neighbours->first;
+		
+		while (vIndex) {
+			 // Consider successors of u
+			GraphNode* v = G->vertices[vIndex->key]; // explore edge (u, v)
+			
+			printf("[%d, %d] ", u->value, v->value);
+			
+			if (v->color == WHITE || v->index == -1) {
+				 // Successor v has not yet been visited; recurse on it
+				v->parent = u;
+				printf("tree edge\n");
+				DFS_VISIT_strongConnect(G, v, topoOrder);
+				u->lowlink = std::min(u->lowlink, v->lowlink);
+			} else {
+				// Successor v is in stack S and hence in the current SCC
+	        	// If v is not on stack, then (u, v) is a cross-edge in the DFS tree and must be ignored
+	    		// Note: The next line may look odd - but is correct.
+    		    // It says v.index not v.lowlink; that is deliberate and from the original paper
+
+				if (onStack[v->value])
+					u->lowlink = std::min(u->lowlink, v->index);
+					
+				if (v->color == GRAY)
+					printf("back edge\n");
+				else if (u->discovered < v->finished)
+					printf("forward edge\n");
+				else 
+					printf("cross edge\n");
+			}
+			
+			vIndex = vIndex->next;
+		}
+	}
+	
+	u->color = BLACK;				// blacken u; it is finished
+	dfsTime++;
+	u->finished = dfsTime;
+	insertFirst(topoOrder, u->value);
+	
+	 // If u is a root node, pop the stack and generate an SCC
+	if (u->lowlink == u->index) {
+		printf("New strongly connected component: ");
+		GraphNode* v;
+		do {
+			v = S.top();
+			printf("%d ", v->value);
+			S.pop();
+			onStack[v->value] = false;
+		} while (u != v);
+		printf("\n");
+	}
+}
+
+List* DFS_Tarjan(Graph *G) {
+	List* topoOrder = (List*) calloc(1, sizeof(List));
+	for (int i=0; i < G->nbOfVertices; i++) {
+		GraphNode* u = G->vertices[i];
+		u->color = WHITE;
+		u->parent = NULL;
+		countOperations += 3;
+	}
+	
+	dfsTime = 0;
+	indexGlb = 0;
+	onStack = (bool*) calloc(G->nbOfVertices, sizeof(bool));
+	
+	for (int i=0; i < G->nbOfVertices; i++) {
+		GraphNode* u = G->vertices[i];
+		
+		if (u->color == WHITE || u->index == -1)
+			DFS_VISIT_strongConnect(G, u, topoOrder);
+	}
+	
+	free(onStack);
+	return topoOrder;
+}
+
+unsigned int getRandom(int max) {
+	double d = drand48();  // gives you a double from 0 to 1
+	double val = d * max;	  // gives you a double from 0 to max
+
+	return (unsigned int) round(val);
+}
+
+Graph* generateRandomGraph(int V, int E) {
+	Graph *G = newGraph(V);
+	int edgeCount = 0;
+
+	while (edgeCount < E) {
+		int u, v;
+		do {
+			u = getRandom(V-1);
+			v = getRandom(V-1);
+		} while (edges[u][v] && u != v);
+		
+		addEdge(G, u, v);
+		edgeCount++;
+	}
+	return G;
+}
+
+void demoDFSandTopo() {
 	Graph* G = newGraph(13);
 	
 	addEdge(G, 0, 1); 
@@ -274,6 +456,65 @@ void demo() {
 	prettyPrint(G);
 	printf("Topological sort of G: ");
 	printList(topo);
+	
+	freeGraph(G);
+	freeList(topo);
+}
+
+void demoTarjan() {
+	Graph* G = newGraph(8);
+	
+	addEdge(G, 0, 1); 
+	addEdge(G, 1, 2); 
+	addEdge(G, 2, 0); 
+	addEdge(G, 3, 1); 	
+	addEdge(G, 3, 2);  	
+	addEdge(G, 3, 4);  
+	addEdge(G, 4, 3);  	
+	addEdge(G, 4, 5); 	
+	addEdge(G, 5, 2); 	
+	addEdge(G, 5, 6); 
+	addEdge(G, 6, 5); 
+	addEdge(G, 7, 4); 
+	addEdge(G, 7, 6); 
+	addEdge(G, 7, 7);
+	
+	printf("Tarjan algorithm:\n");
+	DFS_Tarjan(G);
+}
+
+void edgeVariation() {
+	Graph *G;
+	int V = 100;
+	
+	for (int E = 1000; E <= 4900; E += 100) {
+		clearEdges();
+		G = generateRandomGraph(V, E);
+		countOperations = 0;
+		freeList(DFS(G));
+		profiler.countOperation("V_100", E, countOperations);
+		freeGraph(G);
+	}
+}
+
+void vertVariation() {
+	Graph *G;
+	int E = 4500;
+	
+	for (int V = 100; V <= 200; V += 10) {
+		clearEdges();
+		G = generateRandomGraph(V, E);
+		countOperations = 0;
+		freeList(DFS(G));
+		profiler.countOperation("E_4500", V, countOperations);
+		freeGraph(G);
+	}
+}
+
+void evaluateDFS() {
+	edgeVariation();
+	vertVariation();
+	profiler.showReport();
 }
 
 int main() {
@@ -283,7 +524,11 @@ int main() {
 		edges[i] = (bool*) calloc(300, sizeof(bool));
 	}
 	clearEdges();
-	demo();
+	
+	demoDFSandTopo();
+	demoTarjan();
+	//evaluateDFS();
+	
 	return 0;
 }
 

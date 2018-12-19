@@ -32,3 +32,22 @@ DFS forest:
 8
 
 Topological sort of G: 8->7->2->3->0->6->9->11->12->10->5->4->1->NULL
+Tarjan algorithm:
+[0, 1] tree edge
+[1, 2] tree edge
+[2, 0] back edge
+New strongly connected component: 2 1 0 
+[3, 1] cross edge
+[3, 2] cross edge
+[3, 4] tree edge
+[4, 3] back edge
+[4, 5] tree edge
+[5, 2] cross edge
+[5, 6] tree edge
+[6, 5] back edge
+New strongly connected component: 6 5 
+New strongly connected component: 4 3 
+[7, 4] cross edge
+[7, 6] cross edge
+[7, 7] back edge
+New strongly connected component: 7 
