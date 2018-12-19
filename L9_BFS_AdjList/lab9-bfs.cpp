@@ -57,6 +57,7 @@ void clearEdges() {
 		for (int j=0; j < 300; j++)
 			edges[i][j] = false;
 }
+
 GraphNode* newGraphNode(int val) {
 	GraphNode* g = (GraphNode*) calloc(1, sizeof(GraphNode));
 	g->value = val;
